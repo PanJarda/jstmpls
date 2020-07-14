@@ -125,7 +125,6 @@ function hFor( parent, arrFn, tagName, props, itemChildren ) {
         });
         var oN = old.length,
             newN = arr.length;
-        console.log(oN, newN);
         if ( oN > newN ) {
             var i = oN - newN;
             children.splice(newN);
@@ -140,14 +139,8 @@ function hFor( parent, arrFn, tagName, props, itemChildren ) {
     return res;
 }
 
-var _;
-
 function _prop( key ) {
     return function( obj ) {
         return obj[ key ];
     }
-}
-
-function _Id( item ) {
-    return item;
 }

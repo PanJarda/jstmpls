@@ -39,13 +39,16 @@ function inputChange(e) {
 
 function addItem(event) {
     model.items.push(model.input);
+    model.itemInputs.push(model.input);
     model.input = "";
     updateView();
 }
 
 function removeItem( event ) {
     console.log("removing item " + event.target.getAttribute("data-index"));
-    model.items.splice(event.target.getAttribute("data-index") * 1, 1);
+    var id;
+    model.items.splice(id = event.target.getAttribute("data-index") * 1, 1);
+    model.itemInputs.splice(id);
     updateView();
 }
 
@@ -66,34 +69,34 @@ var view =
         h('h1', { class: _prop("class"),
                   ev: { click: toggleClass }
                 }, "Ahoj" ),
-        h('div', _, [
-            h('p', _, _prop( "clicks" ) )
+        h('div', {}, [
+            h('p', {}, _prop( "clicks" ) )
         ]),
-        h('span', _, _prop( "error" ) ),
+        h('span', {}, _prop( "error" ) ),
         h('hr'),
         h('button', { ev: { mouseup: addClicks} }, "   +   " ),
-        h('i', _, " "),
+        h('i', {}, " "),
         h('button', { ev: { mouseup: subClicks} }, "   -   " ),
-        hIf( h('h2', _, "Ahoj" ),
+        hIf( h('h2', {}, "Ahoj" ),
             _prop( "error" ),
-                h('span', _, _prop("error"))),
-        h('div', _, [
-            h('div',_, [
-                h('div', _, [
-                    h('div', _, [
-                        h('h1', _, "Ahoj")
+                h('span', {}, _prop("error"))),
+        h('div', {}, [
+            h('div',{}, [
+                h('div', {}, [
+                    h('div', {}, [
+                        h('h1', {}, "Ahoj")
                     ]),
-                    h('div', _, [
-                        h('h2', _, "Dalsi ahoj")
+                    h('div', {}, [
+                        h('h2', {}, "Dalsi ahoj")
                     ])
                 ])
             ])
         ]),
         hFor( h('ul'),
             _prop("items"),
-                'li', _, () => [
-                    h('span',_, _prop("item")),
-                    h('span',_, " "),
+                'li', {}, () => [
+                    h('span',{}, _prop("item")),
+                    h('span',{}, " "),
                     h('input', {value: _prop("item"),"data-index": _prop("index"),ev:{change:itemInputChange}}),
                     h('button',{"data-index": _prop("index"),ev:{click: editItem}}, "edit"),
                     h('button', {"data-index": _prop("index"), ev:{ mouseup: removeItem}}, " X ")
