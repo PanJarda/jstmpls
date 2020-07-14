@@ -1,0 +1,15 @@
+{
+  "name": "assign-deep",
+  "version": "1.0.0",
+  "description": "super minimal templating",
+  "main": "index.js",
+  "repository": "https://github.com/PanJarda/assign-deep.js",
+  "author": "Jarda Pernik <livingthinkingentity@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "terser": "^4.6.9"
+  },
+  "scripts": {
+    "build": "node terser.js"
+  }
+}
