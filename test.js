@@ -4,6 +4,7 @@ var model = {
     class: "",
     show: true,
     input: "",
+    itemInputs: [],
     items: [
         1,2,3,4,5
     ]
@@ -48,6 +49,18 @@ function removeItem( event ) {
     updateView();
 }
 
+function itemInputChange( event ) {
+    var index = event.target.getAttribute("data-index");
+    model.itemInputs[index] = event.target.value;
+}
+
+function editItem(e){
+    var i = e.target.getAttribute("data-index");
+    model.items[i] = model.itemInputs[ i ];
+    model.itemInputs[ i ] = "";
+    updateView();
+}
+
 var view =
     h('div', { class: "ahoj" }, [
         h('h1', { class: _prop("class"),
@@ -80,6 +93,9 @@ var view =
             _prop("items"),
                 'li', _, () => [
                     h('span',_, _prop("item")),
+                    h('span',_, " "),
+                    h('input', {value: _prop("item"),"data-index": _prop("index"),ev:{change:itemInputChange}}),
+                    h('button',{"data-index": _prop("index"),ev:{click: editItem}}, "edit"),
                     h('button', {"data-index": _prop("index"), ev:{ mouseup: removeItem}}, " X ")
                 ]),
         h('input',{value: _prop("input"),ev:{change: inputChange}}),

@@ -98,6 +98,7 @@ hIf('h1', {},
 
 
 // muzu si vytvorit funkci ktera mi prevadi vstup na prislusny klic v poli
-hIf('h1', {}, ["Ahoj"],
+hIf(
+    h('h1', {}, "ahoj" ),
     _prop( 'isError' ),
-        'span', {}, _prop( 'errorMsg' ) );
+        h('span', {}, _prop( 'errorMsg' )) );
