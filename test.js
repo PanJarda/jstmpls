@@ -4,7 +4,7 @@ var model = {
     class: "",
     show: true,
     input: "",
-    itemInputs: [],
+    itemInputs: [1,2,3,4,5],
     items: [
         1,2,3,4,5
     ]
@@ -54,7 +54,7 @@ function itemInputChange( event ) {
     model.itemInputs[index] = event.target.value;
 }
 
-function editItem(e){
+function editItem(e) {
     var i = e.target.getAttribute("data-index");
     model.items[i] = model.itemInputs[ i ];
     model.itemInputs[ i ] = "";
@@ -98,7 +98,7 @@ var view =
                     h('button',{"data-index": _prop("index"),ev:{click: editItem}}, "edit"),
                     h('button', {"data-index": _prop("index"), ev:{ mouseup: removeItem}}, " X ")
                 ]),
-        h('input',{value: _prop("input"),ev:{change: inputChange}}),
+        h('input', {value: _prop("input"), ev:{change: inputChange }} ),
         h('button', {ev:{mouseup: addItem}}, "add Item")
     ]);
 

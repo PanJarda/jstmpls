@@ -37,6 +37,9 @@ function setAttribute( attr ) {
         var evNames = Object.keys( this.props.ev );
         evNames.forEach( attachEvHandlers, this );
     } else if ( typeof this.props[ attr ] === "function" ) {
+        //if ( attr === "value" && this.root.tagName === "INPUT" ) {
+         //   this.root.value = "";
+        //}
         var node = document.createAttribute( attr );
         this.puns.push([ this.props[ attr ], node, null ]);
         this.root.setAttributeNode( node );
@@ -125,7 +128,7 @@ function hFor( parent, arrFn, tagName, props, itemChildren ) {
         console.log(oN, newN);
         if ( oN > newN ) {
             var i = oN - newN;
-            children.splice(newN-1, i);
+            children.splice(newN);
             while ( i-- ) {
                 console.log(parent.ref.children[ newN ])
                 parent.ref.removeChild(parent.ref.children[ newN ]);
