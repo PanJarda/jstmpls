@@ -83,7 +83,7 @@ var view =
         h('span', _, get( "error" ) ),
         h('hr'),
         h('button', { ev: { mouseup: addClicks} }, "   +   " ),
-        h('i', _, "\u00A0\u00A0\u00A0"),
+        h('i', _, " "),
         h('button', { ev: { mouseup: subClicks} }, "   -   " ),
         hIf( h('h2', _, "Ahoj" ),
             get( "error" ),

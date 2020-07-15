@@ -79,6 +79,7 @@ function h( tagName, props, children ) {
     };
 
     res.ref = root;
+    res.update = res;
 
     return res;
 }
@@ -104,6 +105,7 @@ function hIf( parent, cond, child ) {
     };
 
     res.ref = parent.ref;
+    res.update = res;
     
     return res;
 }
@@ -148,6 +150,7 @@ function hFor( parent, arrFn, childFactory ) {
     };
     
     res.ref = parent.ref;
+    res.update = res;
 
     return res;
 }
