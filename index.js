@@ -108,39 +108,40 @@ function hIf( parent, cond, child ) {
     return res;
 }
 
-function hFor( parent, arrFn, tagName, props, itemChildren ) {
+function hFor( parent, arrFn, childFactory ) {
     var old = [],
     children = [],
     res = function( model ) {
         parent( model );
         var arr = arrFn( model ),
-            child;
-
-        arr.forEach(function(item, i) {
+            child,
+            item,
+            N = arr.length;
+        for ( var i = 0; i < N; i++ ) {
+            item = arr[ i ];
             // TODO: deepcompare
             if ( old[ i ] === item ) 
-                return;
+                continue;
             
-            if ( children[ i ] )
-                return children[ i ]({ index: i, item: item });
+            if ( children[ i ] ) {
+                children[ i ]({ index: i, item: item });
+                continue;
+            }
             
-            child = h( tagName, props,
-                typeof itemChildren === "function"
-                    ? itemChildren()
-                    : itemChildren );
+            child = childFactory();
             child({ index: i, item: item });
             children.push( child );
             parent.ref.appendChild( child.ref );
-        });
+        }
 
         // odrizneme precuhujici prvky
         var oN = old.length,
             newN = arr.length;
         if ( oN > newN ) {
-            var i = oN - newN;
-            children.splice(newN);
+            i = oN - newN;
+            children.splice( newN );
             while ( i-- )
-                parent.ref.removeChild(parent.ref.children[ newN ]);
+                parent.ref.removeChild( parent.ref.children[ newN ] );
         }
 
         old = arr.slice();

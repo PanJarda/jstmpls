@@ -1,7 +1,8 @@
 {
 	"entry": {
 		"index": "./index.js",
-		"test": "./test.js"
+		"test": "./test.js",
+		"index.oop": "./index.oop.js"
 	},
 	"output": {
         "filename": "[name].min.js",

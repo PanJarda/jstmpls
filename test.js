@@ -102,13 +102,15 @@ var view =
         ]),
         hFor( h('ul'),
             get("items"),
-                'li', _, function() { return [
+            function() {
+                return h('li', _, [
                     h('span',_, get("item")),
                     h('span',_, " "),
                     h('input', {value: get("item"),"data-index": get("index"),ev:{change:itemInputChange}}),
                     h('button',{"data-index": get("index"),ev:{click: editItem}}, "edit"),
                     h('button', {"data-index": get("index"), ev:{ mouseup: removeItem}}, " X ")
-                ] }),
+                ]);
+            }),
         h('input', {value: get("input"), ev:{change: inputChange }} ),
         h('button', {ev:{mouseup: addItem}}, "add Item")
     ]);
@@ -118,7 +120,7 @@ app.innerHTML = "";
 app.appendChild(view.ref);
 
 function updateView() {
-    view( model );
+    view.update( model );
 }
 
 updateView();
