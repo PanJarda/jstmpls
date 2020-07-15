@@ -105,7 +105,9 @@ var view =
         h('button', {ev:{mouseup: addItem}}, "add Item")
     ]);
 
-document.getElementById('app').appendChild(view.ref);
+var app = document.getElementById('app');
+app.innerHTML = "";
+app.appendChild(view.ref);
 
 function updateView() {
     view( model );
