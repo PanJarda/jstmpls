@@ -9,8 +9,8 @@
 } )( typeof window !== "undefined" ? window : this, function( window, global ) {
     "use strict";
 
-    function Element( tagName, props, children ) {
-        var _ = this;
+    function H( tagName, props, children ) {
+        var _      = this;
         _.puns     = [];
         _.ref      = document.createElement( tagName );
         _.children = children;
@@ -34,7 +34,7 @@
         }
     }
 
-    Element.prototype = {
+    H.prototype = {
         setAttribute: function( attr, value ) {
             var _ = this;
             
@@ -93,17 +93,17 @@
         }
     };
 
-    function CombinatorIf( parent, cond, child ) {
-        var _ = this;
-        _.parent = parent;
+    function HIf( parent, cond, child ) {
+        var _      = this;
+        _.parent   = parent;
         _.appended = false;
-        _.ref = parent.ref;
-        _.cond = cond;
-        _.child = child;
-        _.ref = parent.ref;
+        _.ref      = parent.ref;
+        _.cond     = cond;
+        _.child    = child;
+        _.ref      = parent.ref;
     }
 
-    CombinatorIf.prototype.update = function( model ) {
+    HIf.prototype.update = function( model ) {
         var _ = this,
         child = _.child,
         parent = _.parent,
@@ -123,17 +123,17 @@
         }
     };
 
-    function CombinatorFor( parent, arrFn, childFactory ) {
-        var _ = this;
-        _.old = [];
-        _.children = [];
-        _.parent = parent;
-        _.arrFn = arrFn;
+    function HFor( parent, arrFn, childFactory ) {
+        var _          = this;
+        _.old          = [];
+        _.children     = [];
+        _.parent       = parent;
+        _.arrFn        = arrFn;
         _.childFactory = childFactory;
-        _.ref = parent.ref;
+        _.ref          = parent.ref;
     }
 
-    CombinatorFor.prototype.update = function( model ) {
+    HFor.prototype.update = function( model ) {
         var _ = this;
         _.parent.update( model );
         
@@ -172,27 +172,26 @@
     };
 
     function h( tagName, props, children ) {
-        return new Element( tagName, props, children );
+        return new H( tagName, props, children );
     }
 
     function hIf( parent, cond, child ) {
-        return new CombinatorIf( parent, cond, child );
+        return new HIf( parent, cond, child );
     }
 
     function hFor( parent, arrFn, childFactory ) {
-        return new CombinatorFor( parent, arrFn, childFactory );
+        return new HFor( parent, arrFn, childFactory );
     }
 
-    	
 	if ( !global ) {
-        window.h = h;
-        window.hIf = hIf;
+        window.h    = h;
+        window.hIf  = hIf;
         window.hFor = hFor;
     }
 
     return {
-        h: h,
-        hIf: hIf,
+        h:    h,
+        hIf:  hIf,
         hFor: hFor
     };
 });
