@@ -9,13 +9,14 @@ function updatePun( pair ) {
         oldVal = pair[ 2 ],
         newVal =  fn( this.model );
     // input nema cenu cachovat
-    if (this.root.tagName === "INPUT"
-        && typeof txt === "object"
-        && txt.name === "value"
-        && this.root.value !== newVal) {
-            this.root.value = newVal;
-    } else if ( oldVal !== newVal ) {
-        if ( typeof txt === "object" ) {
+    if ( oldVal !== newVal ) {
+        //console.log("updating " + this.root.tagName + " " + ( txt.name || txt ) + " " + newVal);
+        if (this.root.tagName === "INPUT"
+            && typeof txt === "object"
+            && txt.name === "value"
+            && this.root.value !== newVal) {
+                this.root.value = newVal;
+        } else if ( typeof txt === "object" ) {
             txt.nodeValue = newVal;
         } else {
             this.root.setAttribute( txt, newVal );
@@ -129,7 +130,7 @@ function hFor( parent, arrFn, tagName, props, itemChildren ) {
             var i = oN - newN;
             children.splice(newN);
             while ( i-- ) {
-                console.log(parent.ref.children[ newN ])
+                //console.log(parent.ref.children[ newN ])
                 parent.ref.removeChild(parent.ref.children[ newN ]);
             }
         }
