@@ -65,15 +65,17 @@ function h( tagName, props, children ) {
             puns.push( { fn: children, node: txt } );
             break;
         case "object": // array
-            children.forEach( function( ch ) {
-                root.appendChild( ch.ref );
-            });
+            var N = children.length;
+            for ( var i = 0; i < N; i++ )
+                root.appendChild( children[ i ].ref );
     }
    
     var res = function( model ) {
         puns.forEach( updatePun, { model: model, root: root });
-        if ( typeof children === "object" )
-            children.forEach( function( child ) { child( model ); });
+        
+        if ( typeof children === 'object' )
+            for ( var i in children )
+                children[ i ]( model );
     };
 
     res.ref = root;
