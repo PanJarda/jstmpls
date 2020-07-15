@@ -64,44 +64,46 @@ function editItem(e) {
     updateView();
 }
 
+var _ = false;
+
 var view =
     h('div', { class: "ahoj" }, [
-        h('h1', { class: _prop("class"),
+        h('h1', { class: prop("class"),
                   ev: { click: toggleClass }
                 }, "Ahoj" ),
-        h('div', {}, [
-            h('p', {}, _prop( "clicks" ) )
+        h('div', _, [
+            h('p', _, prop( "clicks" ) )
         ]),
-        h('span', {}, _prop( "error" ) ),
+        h('span', _, prop( "error" ) ),
         h('hr'),
         h('button', { ev: { mouseup: addClicks} }, "   +   " ),
-        h('i', {}, " "),
+        h('i', _, "\u00A0\u00A0\u00A0"),
         h('button', { ev: { mouseup: subClicks} }, "   -   " ),
-        hIf( h('h2', {}, "Ahoj" ),
-            _prop( "error" ),
-                h('span', {}, _prop("error"))),
-        h('div', {}, [
-            h('div',{}, [
-                h('div', {}, [
-                    h('div', {}, [
-                        h('h1', {}, "Ahoj")
+        hIf( h('h2', _, "Ahoj" ),
+            prop( "error" ),
+                h('span', _, prop("error"))),
+        h('div', _, [
+            h('div',_, [
+                h('div', _, [
+                    h('div', _, [
+                        h('h1', _, "Ahoj")
                     ]),
-                    h('div', {}, [
-                        h('h2', {}, "Dalsi ahoj")
+                    h('div',_, [
+                        h('h2', _, "Dalsi ahoj")
                     ])
                 ])
             ])
         ]),
         hFor( h('ul'),
-            _prop("items"),
-                'li', {}, () => [
-                    h('span',{}, _prop("item")),
-                    h('span',{}, " "),
-                    h('input', {value: _prop("item"),"data-index": _prop("index"),ev:{change:itemInputChange}}),
-                    h('button',{"data-index": _prop("index"),ev:{click: editItem}}, "edit"),
-                    h('button', {"data-index": _prop("index"), ev:{ mouseup: removeItem}}, " X ")
-                ]),
-        h('input', {value: _prop("input"), ev:{change: inputChange }} ),
+            prop("items"),
+                'li', _, function() { return [
+                    h('span',_, prop("item")),
+                    h('span',_, " "),
+                    h('input', {value: prop("item"),"data-index": prop("index"),ev:{change:itemInputChange}}),
+                    h('button',{"data-index": prop("index"),ev:{click: editItem}}, "edit"),
+                    h('button', {"data-index": prop("index"), ev:{ mouseup: removeItem}}, " X ")
+                ] }),
+        h('input', {value: prop("input"), ev:{change: inputChange }} ),
         h('button', {ev:{mouseup: addItem}}, "add Item")
     ]);
 
