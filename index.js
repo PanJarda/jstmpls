@@ -66,14 +66,14 @@ function h( tagName, props, children ) {
             break;
         case "object": // array
             children.forEach( function( ch ) {
-                root.appendChild( ch.ref )
+                root.appendChild( ch.ref );
             });
     }
    
     var res = function( model ) {
         puns.forEach( updatePun, { model: model, root: root });
         if ( typeof children === "object" )
-            children.forEach( function( child ) { child( model ) });
+            children.forEach( function( child ) { child( model ); });
     };
 
     res.ref = root;
@@ -147,10 +147,4 @@ function hFor( parent, arrFn, tagName, props, itemChildren ) {
     res.ref = parent.ref;
 
     return res;
-}
-
-function prop( key ) {
-    return function( obj ) {
-        return obj[ key ]
-    }
 }

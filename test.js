@@ -66,22 +66,28 @@ function editItem(e) {
 
 var _ = false;
 
+function get( key ) {
+    return function( obj ) {
+        return obj[ key ]
+    }
+}
+
 var view =
     h('div', { class: "ahoj" }, [
-        h('h1', { class: prop("class"),
+        h('h1', { class: get("class"),
                   ev: { click: toggleClass }
                 }, "Ahoj" ),
         h('div', _, [
-            h('p', _, prop( "clicks" ) )
+            h('p', _, get( "clicks" ) )
         ]),
-        h('span', _, prop( "error" ) ),
+        h('span', _, get( "error" ) ),
         h('hr'),
         h('button', { ev: { mouseup: addClicks} }, "   +   " ),
         h('i', _, "\u00A0\u00A0\u00A0"),
         h('button', { ev: { mouseup: subClicks} }, "   -   " ),
         hIf( h('h2', _, "Ahoj" ),
-            prop( "error" ),
-                h('span', _, prop("error"))),
+            get( "error" ),
+                h('span', _, get("error"))),
         h('div', _, [
             h('div',_, [
                 h('div', _, [
@@ -95,15 +101,15 @@ var view =
             ])
         ]),
         hFor( h('ul'),
-            prop("items"),
+            get("items"),
                 'li', _, function() { return [
-                    h('span',_, prop("item")),
+                    h('span',_, get("item")),
                     h('span',_, " "),
-                    h('input', {value: prop("item"),"data-index": prop("index"),ev:{change:itemInputChange}}),
-                    h('button',{"data-index": prop("index"),ev:{click: editItem}}, "edit"),
-                    h('button', {"data-index": prop("index"), ev:{ mouseup: removeItem}}, " X ")
+                    h('input', {value: get("item"),"data-index": get("index"),ev:{change:itemInputChange}}),
+                    h('button',{"data-index": get("index"),ev:{click: editItem}}, "edit"),
+                    h('button', {"data-index": get("index"), ev:{ mouseup: removeItem}}, " X ")
                 ] }),
-        h('input', {value: prop("input"), ev:{change: inputChange }} ),
+        h('input', {value: get("input"), ev:{change: inputChange }} ),
         h('button', {ev:{mouseup: addItem}}, "add Item")
     ]);
 
