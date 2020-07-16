@@ -125,8 +125,12 @@ function main() {
     app.appendChild(view.ref);
 }
 
-if (window.addEventListener)
+if (window.addEventListener) {
     window.addEventListener('load', main, false);
-else if (window.attachEvent)
-    window.attachEvent('load', main);
+} else if (window.attachEvent) {
+    document.onreadystatechange = new function() {
+        if (document.readyState === 'complete')
+            main();
+    };
+}
 
