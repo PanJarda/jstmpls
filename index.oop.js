@@ -43,7 +43,10 @@
                     if (_.ref.addEventListener)
                         _.ref.addEventListener(evName, value[evName], false);
                     else if (_.ref.attachEvent)
-                        _.ref.attachEvent(evName, value[evName]);
+                        _.ref.attachEvent('on' + evName, function(e) {
+                            e.target = e.srcElement;
+                            value[evName](e);
+                        });
                 return;
             }
 
@@ -167,8 +170,9 @@
         if (oN > newN) {
             i = oN - newN;
             _.children.splice(newN);
-            while (i--)
+            while (i--) {
                 _.parent.ref.removeChild(_.parent.ref.children[newN]);
+            }
         }
 
         _.old = arr.slice();

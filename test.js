@@ -2,7 +2,7 @@ function main() {
     var model = {
         clicks: 0,
         error: "",
-        class: "",
+        className: "",
         show: true,
         input: "",
         itemInputs: [1,2,3,4,5],
@@ -30,7 +30,7 @@ function main() {
     }
     
     function toggleClass( event ){
-        model.class = model.class === "red" ? "" : "red";
+        model.className = model.className === "red" ? "" : "red";
         updateView();
     }
     
@@ -74,8 +74,8 @@ function main() {
     }
 
     var view =
-        h('div', { class: "ahoj" }, [
-            h('h1', { class: get("class"),
+        h('div', { "class": "ahoj" }, [
+            h('h1', { "class": get("className"),
                     ev: { click: toggleClass }
                     }, "Ahoj" ),
             h('div', _, [
@@ -129,7 +129,8 @@ if (window.addEventListener) {
     window.addEventListener('load', main, false);
 } else if (window.attachEvent) {
     document.onreadystatechange = new function() {
-        if (document.readyState === 'complete')
+        console.log(document.readyState);
+        if (document.readyState === 'complete' || document.readyState === 'interactive')
             main();
     };
 }
