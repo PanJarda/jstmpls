@@ -34,69 +34,68 @@
         }
     }
 
-    H.prototype = {
-        setAttribute: function (attr, value) {
-            var _ = this;
+    H.prototype.setAttribute = function (attr, value) {
+        var _ = this;
 
-            if (attr === "ev") {
-                for (var evName in value)
-                    if (_.ref.addEventListener)
-                        _.ref.addEventListener(evName, value[evName], false);
-                    else if (_.ref.attachEvent)
-                        _.ref.attachEvent('on' + evName, function(e) {
-                            e.target = e.srcElement;
-                            value[evName](e);
-                        });
-                return;
-            }
-
-            if (typeof value === "function") {
-                var node = document.createAttribute(attr);
-
-                _.puns.push({
-                    fn: value,
-                    node: node
-                });
-
-                _.ref.setAttributeNode(node);
-
-                return;
-            }
-
-            _.ref.setAttribute(attr, value);
-        },
-        update: function (model) {
-            var _ = this,
-                i = 0,
-                N = _.puns.length,
-                node, pun, newVal;
-
-            for (i = 0; i < N; i++) {
-                pun = _.puns[i];
-                node = pun.node;
-                newVal = pun.fn(model);
-
-                if (pun.old === newVal)
-                    return;
-
-                if (typeof node === "object") {
-                    if (_.ref.tagName === "INPUT" &&
-                        node.name === "value" &&
-                        _.ref.value !== newVal)
-                        _.ref.value = newVal;
-                    else
-                        node.nodeValue = newVal;
-                } else {
-                    _.ref.setAttribute(node, newVal);
-                }
-
-                pun.old = newVal;
-            }
-
-            if (typeof _.children === "object")
-                for (i in _.children)
-                    _.children[i].update(model);
+        if (attr === "ev") {
+            for (var evName in value)
+                if (_.ref.addEventListener)
+                    _.ref.addEventListener(evName, value[evName], false);
+                else if (_.ref.attachEvent)
+                    _.ref.attachEvent('on' + evName, function (e) {
+                        e.target = e.srcElement;
+                        value[evName](e);
+                    });
+            return;
         }
+
+        if (typeof value === "function") {
+            var node = document.createAttribute(attr);
+
+            _.puns.push({
+                fn: value,
+                node: node
+            });
+
+            _.ref.setAttributeNode(node);
+
+            return;
+        }
+
+        _.ref.setAttribute(attr, value);
+    };
+
+    H.prototype.update = function (model) {
+        var _ = this,
+            i = 0,
+            N = _.puns.length,
+            node, pun, newVal;
+
+        for (i = 0; i < N; i++) {
+            pun = _.puns[i];
+            node = pun.node;
+            newVal = pun.fn(model);
+
+            if (pun.old === newVal)
+                return;
+
+            if (typeof node === "object") {
+                if (_.ref.tagName === "INPUT" &&
+                    node.name === "value" &&
+                    _.ref.value !== newVal)
+                    _.ref.value = newVal;
+                else
+                    node.nodeValue = newVal;
+            } else {
+                _.ref.setAttribute(node, newVal);
+            }
+
+            pun.old = newVal;
+        }
+
+        if (typeof _.children === "object")
+            for (i in _.children)
+                _.children[i].update(model);
     };
 
     function HIf(parent, cond, child) {
