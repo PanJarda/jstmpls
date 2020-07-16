@@ -40,7 +40,10 @@
 
             if (attr === "ev") {
                 for (var evName in value)
-                    _.ref.addEventListener(evName, value[evName]);
+                    if (_.ref.addEventListener)
+                        _.ref.addEventListener(evName, value[evName], false);
+                    else if (_.ref.attachEvent)
+                        _.ref.attachEvent(evName, value[evName]);
                 return;
             }
 
