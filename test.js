@@ -1,15 +1,61 @@
-function main() {
-    var model = {
-        clicks: 0,
-        error: "",
-        className: "",
-        show: true,
-        input: "",
-        itemInputs: [1,2,3,4,5],
-        items: [
-            1,2,3,4,5
-        ]
+var Store = (function() {
+
+    function Store( reducer ) {
+        this.reducer = reducer;
+    }
+
+    Store.prototype.getInstance = function ( reducer ) {
+        
     };
+    
+    Store.prototype.getState = function () {}
+    
+    Store.prototype.dispatch = function ( action ) {
+        
+    };
+    
+    Store.prototype.subscribe = function ( handler ) {
+    
+    };
+
+    Store.prototype.unsubscribe = function ( handler ) {};
+
+    var instance;
+    
+    function getInstance() {
+        if ( !instance )
+            return instance = new Store();
+        else
+            return instance;
+    }
+
+    return {
+        getInstance: getInstance
+    };
+});
+
+
+
+
+function main() {
+    var initState = {
+            clicks: 0,
+            error: "",
+            className: "",
+            show: true,
+            input: "",
+            itemInputs: [1,2,3,4,5],
+            items: [
+                1,2,3,4,5
+            ]
+        };
+    };
+
+    function addClick( state ) {
+        return assignDeep( state, {
+            clicks: state.clicks + 1
+        });
+    }
 
     function addClicks( event ) {
         model.clicks++;
@@ -29,7 +75,7 @@ function main() {
         updateView();
     }
     
-    function toggleClass( event ){
+    function toggleClass( event ) {
         model.className = model.className === "red" ? "" : "red";
         updateView();
     }
@@ -116,7 +162,7 @@ function main() {
             h('button', {ev:{mouseup: addItem}}, "add Item")
         ]);
 
-    function updateView() {
+    function updateView( model ) {
         view.update( model );
     }
     updateView();

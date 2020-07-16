@@ -35,14 +35,15 @@
     }
 
     H.prototype.setAttribute = function (attr, value) {
-        var _ = this;
+        var _ = this,
+            ref = _.ref;
 
         if (attr === "ev") {
             for (var evName in value)
-                if (_.ref.addEventListener)
-                    _.ref.addEventListener(evName, value[evName], false);
-                else if (_.ref.attachEvent)
-                    _.ref.attachEvent('on' + evName, function (e) {
+                if (ref.addEventListener)
+                    ref.addEventListener(evName, value[evName], false);
+                else if (ref.attachEvent)
+                    ref.attachEvent('on' + evName, function (e) {
                         e.target = e.srcElement;
                         value[evName](e);
                     });
@@ -57,12 +58,12 @@
                 node: node
             });
 
-            _.ref.setAttributeNode(node);
+            ref.setAttributeNode(node);
 
             return;
         }
 
-        _.ref.setAttribute(attr, value);
+        ref.setAttribute(attr, value);
     };
 
     H.prototype.update = function (model) {
