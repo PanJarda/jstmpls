@@ -40,13 +40,7 @@
 
         if (attr === "ev") {
             for (var evName in value)
-                if (ref.addEventListener)
-                    ref.addEventListener(evName, value[evName], false);
-                else if (ref.attachEvent)
-                    ref.attachEvent('on' + evName, function (e) {
-                        e.target = e.srcElement;
-                        value[evName](e);
-                    });
+                ref.addEventListener(evName, value[evName], false);
             return;
         }
 

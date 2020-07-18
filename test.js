@@ -1,62 +1,40 @@
-var Store = (function() {
+var Model = {
+    state: {
+        clicks: 0,
+        error: "",
+        className: "",
+        show: true,
+        input: "",
+        itemInputs: [1,2,3,4,5],
+        items: [
+            1,2,3,4,5
+        ]
+    },
 
-    function Store( reducer ) {
-        this.reducer = reducer;
-    }
+}
 
-    Store.prototype.getInstance = function ( reducer ) {
-        
-    };
-    
-    Store.prototype.getState = function () {}
-    
-    Store.prototype.dispatch = function ( action ) {
-        
-    };
-    
-    Store.prototype.subscribe = function ( handler ) {
-    
-    };
-
-    Store.prototype.unsubscribe = function ( handler ) {};
-
-    var instance;
-    
-    function getInstance() {
-        if ( !instance )
-            return instance = new Store();
-        else
-            return instance;
-    }
-
-    return {
-        getInstance: getInstance
-    };
-});
-
-
-
-
+/*
+asynchronicita nehraje roli since vsecko je singlethreaded
+ */
 function main() {
-    var initState = {
-            clicks: 0,
-            error: "",
-            className: "",
-            show: true,
-            input: "",
-            itemInputs: [1,2,3,4,5],
-            items: [
-                1,2,3,4,5
-            ]
-        };
+    var init = {
+        clicks: 0,
+        error: "",
+        className: "",
+        show: true,
+        input: "",
+        itemInputs: [],
+        items: []
     };
 
-    function addClick( state ) {
-        return assignDeep( state, {
-            clicks: state.clicks + 1
-        });
+    var model = init;
+    function loadModel() {
+        console.log('loading model');
+        model = JSON.parse(window.localStorage.getItem("model"));
+        updateView();
     }
-
+    setTimeout(loadModel, 0);
+     
     function addClicks( event ) {
         model.clicks++;
         if ( model.clicks > 0 ) {
@@ -110,6 +88,10 @@ function main() {
         model.itemInputs[ i ] = "";
         updateView();
     }
+
+    function storeModel() {
+        window.localStorage && window.localStorage.setItem("model", JSON.stringify( model ));
+    }
     
     var _ = false;
     
@@ -118,6 +100,20 @@ function main() {
             return obj[ key ]
         }
     }
+
+    function route( e ) {
+        //console.log( e.target.href );
+        //history.pushState({}, 'prdel', e.target.href );
+        //e.preventDefault();
+    }
+
+    window.addEventListener('hashchange', function() {
+        model.show = !model.show;
+        console.log(model.show);
+        updateView();
+    });
+
+    window.addEventListener('storage', loadModel)
 
     var view =
         h('div', { "class": "ahoj" }, [
@@ -128,6 +124,7 @@ function main() {
                 h('p', _, get( "clicks" ) )
             ]),
             h('span', _, get( "error" ) ),
+            h('a', {href:'#prdel', ev: { click: route }}, "link1"),
             h('hr'),
             h('button', { ev: { mouseup: addClicks} }, "   +   " ),
             h('i', _, " "),
@@ -135,7 +132,8 @@ function main() {
             hIf( h('h2', _, "Ahoj" ),
                 get( "error" ),
                     h('span', _, get("error"))),
-            h('div', _, [
+            hIf(h('div'),
+                get("show"),
                 h('div',_, [
                     h('div', _, [
                         h('div', _, [
@@ -146,7 +144,7 @@ function main() {
                         ])
                     ])
                 ])
-            ]),
+            ),
             hFor( h('ul'),
                 get("items"),
                 function() {
@@ -162,10 +160,12 @@ function main() {
             h('button', {ev:{mouseup: addItem}}, "add Item")
         ]);
 
-    function updateView( model ) {
-        view.update( model );
+    function updateView( m ) {
+        setTimeout(storeModel, 0);
+        view.update( m || model );
     }
-    updateView();
+    view.update( model );
+
     var app = document.getElementById('app');
     app.innerHTML = "";
     app.appendChild(view.ref);
@@ -175,9 +175,20 @@ if (window.addEventListener) {
     window.addEventListener('load', main, false);
 } else if (window.attachEvent) {
     document.onreadystatechange = new function() {
-        console.log(document.readyState);
         if (document.readyState === 'complete' || document.readyState === 'interactive')
             main();
     };
 }
 
+
+function route(e) {
+    //e.preventDefault();
+    console.log('hashchange');
+}
+
+//hashchange ma lepsi support IE8
+
+window.addEventListener('popstate', function(e) {
+    console.log('popstate');
+});
+window.addEventListener('hashchange', route);
