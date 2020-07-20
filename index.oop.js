@@ -1,73 +1,72 @@
-(function (global, factory) {
+(function (window) {
     "use strict";
 
-    if (typeof module === "object" && typeof module.exports === "object") {
-        module.exports = factory(global, true);
-    } else {
-        factory(global);
-    }
-})(typeof window !== "undefined" ? window : this, function (window, global) {
-    "use strict";
+    var doc = document,
+    proto = 'prototype',
+    UPDATE = 'update',
+    appendCh = 'appendChild',
+    S = 'setAttribute',
+    len = 'length',
+    CHLDRN = 'children',
+    PARENT = 'parent';
 
     function H(tagName, props, children) {
-        var _ = this;
-        _.puns = [];
-        _.ref = document.createElement(tagName);
-        _.children = children;
+        var h = this, attr, txt, N,i,t;
+        h.puns = [];
+        h.ref = doc.createElement(tagName);
+        h[CHLDRN] = children;
 
-        for (var attr in props)
-            _.setAttribute(attr, props[attr]);
+        for (attr in props)
+            h.s(attr, props[attr]);
 
-        switch (typeof children) {
-            case "string":
-                _.ref.appendChild(document.createTextNode(children));
-                break;
-            case "function":
-                var txt = document.createTextNode('');
-                _.ref.appendChild(txt);
-                _.puns.push({ fn: children, node: txt });
-                break;
-            case "object": // array
-                var N = children.length;
-                for (var i = 0; i < N; i++)
-                    _.ref.appendChild(children[i].ref);
+        t = typeof children;
+        if (t === 'string')
+            h.ref[appendCh](doc.createTextNode(children));
+        else if (t === 'function') {
+            txt = doc.createTextNode('');
+            h.ref[appendCh](txt);
+            h.puns.push({ fn: children, node: txt });
+        } else if (t === 'object') {
+            N = children[len];
+            for (i = 0; i < N; i++)
+                h.ref[appendCh](children[i].ref);
         }
     }
 
-    H.prototype.setAttribute = function (attr, value) {
-        var _ = this,
-            ref = _.ref;
+    H[proto].s = function (attr, value) {
+        var h = this,
+            evName, node;
 
         if (attr === "ev") {
-            for (var evName in value)
-                ref.addEventListener(evName, value[evName], false);
+            for (evName in value)
+                h.ref.addEventListener(evName, value[evName], false);
             return;
         }
 
         if (typeof value === "function") {
-            var node = document.createAttribute(attr);
+            node = doc.createAttribute(attr);
 
-            _.puns.push({
+            h.puns.push({
                 fn: value,
                 node: node
             });
 
-            ref.setAttributeNode(node);
+            h.ref[S + 'Node'](node);
 
             return;
         }
 
-        ref.setAttribute(attr, value);
+        h.ref[S](attr, value);
     };
 
-    H.prototype.update = function (model) {
-        var _ = this,
+    H[proto][UPDATE] = function (model) {
+        var h = this,
             i = 0,
-            N = _.puns.length,
+            N = h.puns[len],
             node, pun, newVal;
 
         for (i = 0; i < N; i++) {
-            pun = _.puns[i];
+            pun = h.puns[i];
             node = pun.node;
             newVal = pun.fn(model);
 
@@ -75,101 +74,101 @@
                 return;
 
             if (typeof node === "object") {
-                if (_.ref.tagName === "INPUT" &&
+                if (h.ref.tagName === "INPUT" &&
                     node.name === "value" &&
-                    _.ref.value !== newVal)
-                    _.ref.value = newVal;
+                    h.ref.value !== newVal)
+                    h.ref.value = newVal;
                 else
                     node.nodeValue = newVal;
             } else {
-                _.ref.setAttribute(node, newVal);
+                h.ref[S](node, newVal);
             }
 
             pun.old = newVal;
         }
 
-        if (typeof _.children === "object")
-            for (i in _.children)
-                _.children[i].update(model);
+        if (typeof h[CHLDRN] === "object")
+            for (i in h[CHLDRN])
+                h[CHLDRN][i][UPDATE](model);
     };
 
     function HIf(parent, cond, child) {
-        var _ = this;
-        _.parent = parent;
-        _.appended = false;
-        _.ref = parent.ref;
-        _.cond = cond;
-        _.child = child;
-        _.ref = parent.ref;
+        var h = this;
+        h[PARENT] = parent;
+        h.appended = false;
+        h.ref = parent.ref;
+        h.cond = cond;
+        h.child = child;
+        h.ref = parent.ref;
     }
 
-    HIf.prototype.update = function (model) {
-        var _ = this,
-            child = _.child,
-            parent = _.parent,
-            res = _.cond(model);
+    HIf[proto][UPDATE] = function (model) {
+        var h = this,
+            res = h.cond(model);
 
-        parent.update(model);
+        h[PARENT][UPDATE](model);
 
         if (res)
-            child.update(model);
+            h.child[UPDATE](model);
 
-        if (_.appended && !res) {
-            parent.ref.removeChild(child.ref);
-            _.appended = false;
+        if (h.appended && !res) {
+            h[PARENT].ref.removeChild(h.child.ref);
+            h.appended = false;
         } else if (res) {
-            parent.ref.appendChild(child.ref);
-            _.appended = true;
+            h[PARENT].ref[appendCh](h.child.ref);
+            h.appended = true;
         }
     };
 
-    function HFor(parent, arrFn, childFactory) {
-        var _ = this;
-        _.old = [];
-        _.children = [];
-        _.parent = parent;
-        _.arrFn = arrFn;
-        _.childFactory = childFactory;
-        _.ref = parent.ref;
+    function HFor(parent, arrFn, factory) {
+        var h = this;
+        h.old = [];
+        h[CHLDRN] = [];
+        h[PARENT] = parent;
+        h.arrFn = arrFn;
+        h.factory = factory;
+        h.ref = parent.ref;
     }
 
-    HFor.prototype.update = function (model) {
-        var _ = this;
-        _.parent.update(model);
+    HFor[proto][UPDATE] = function (model) {
+        var h = this,
+        arr = h.arrFn(model),
+        child,
+        item,
+        N = arr[len],
+        i, oN, newN;
 
-        var arr = _.arrFn(model),
-            child,
-            item,
-            N = arr.length;
-        for (var i = 0; i < N; i++) {
+        h[PARENT][UPDATE](model);
+        
+        for (i = 0; i < N; i++) {
             item = arr[i];
             // TODO: deepcompare
-            if (_.old[i] === item)
+            if (h.old[i] === item)
                 continue;
 
-            if (_.children[i]) {
-                _.children[i].update({ index: i, item: item, parent: model });
+            if (h[CHLDRN][i]) {
+                h[CHLDRN][i][UPDATE]({ index: i, item: item, parent: model });
                 continue;
             }
 
-            child = _.childFactory();
-            child.update({ index: i, item: item, parent: model });
-            _.children.push(child);
-            _.parent.ref.appendChild(child.ref);
+            child = h.factory();
+            child[UPDATE]({ index: i, item: item, parent: model });
+            h[CHLDRN].push(child);
+            h[PARENT].ref[appendCh](child.ref);
         }
 
         // odrizneme precuhujici prvky
-        var oN = _.old.length,
-            newN = arr.length;
+        oN = h.old[len];
+        newN = arr[len];
         if (oN > newN) {
             i = oN - newN;
-            _.children.splice(newN);
+            h[CHLDRN].splice(newN);
             while (i--) {
-                _.parent.ref.removeChild(_.parent.ref.children[newN]);
+                h[PARENT].ref.removeChild(h[PARENT].ref[CHLDRN][newN]);
             }
         }
 
-        _.old = arr.slice();
+        h.old = arr.slice();
     };
 
     function h(tagName, props, children) {
@@ -180,11 +179,11 @@
         return new HIf(parent, cond, child);
     }
 
-    function hFor(parent, arrFn, childFactory) {
-        return new HFor(parent, arrFn, childFactory);
+    function hFor(parent, arrFn, factory) {
+        return new HFor(parent, arrFn, factory);
     }
 
-    if (!global) {
+    if (window) {
         window.h = h;
         window.hIf = hIf;
         window.hFor = hFor;
@@ -195,4 +194,4 @@
         hIf: hIf,
         hFor: hFor
     };
-});
+})(window);
