@@ -148,12 +148,12 @@
                 continue;
 
             if (_.children[i]) {
-                _.children[i].update({ index: i, item: item });
+                _.children[i].update({ index: i, item: item, parent: model });
                 continue;
             }
 
             child = _.childFactory();
-            child.update({ index: i, item: item });
+            child.update({ index: i, item: item, parent: model });
             _.children.push(child);
             _.parent.ref.appendChild(child.ref);
         }
