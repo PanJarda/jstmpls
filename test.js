@@ -30,7 +30,7 @@ function main() {
     var model = init;
     function loadModel() {
         console.log('loading model');
-        model = JSON.parse(window.localStorage.getItem("model"));
+        model = JSON.parse(window.localStorage.getItem("model")) || init;
         updateView();
     }
     setTimeout(loadModel, 0);
