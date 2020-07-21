@@ -19,18 +19,24 @@
         for (attr in props)
             h.s(attr, props[attr]);
 
-        t = typeof children;
-        if (t === 'string')
-            h.ref[appendCh](doc.createTextNode(children));
-        else if (t === 'function') {
-            txt = doc.createTextNode('');
-            h.ref[appendCh](txt);
-            h.puns.push({ fn: children, node: txt });
-        } else if (t === 'object') {
-            N = children[len];
-            for (i = 0; i < N; i++)
-                h.ref[appendCh](children[i].ref);
+        switch (typeof children) {
+            case 'string':
+                h.ref[appendCh](doc.createTextNode(children));
+                break;
+            case 'function':
+                txt = doc.createTextNode('');
+                h.ref[appendCh](txt);
+                h.puns.push({
+                    fn: children,
+                    node: txt
+                });
+                break;
+            case 'object':
+                N = children[len];
+                for (i = 0; i < N; i++)
+                    h.ref[appendCh](children[i].ref);
         }
+
     }
 
     H[proto].s = function (attr, value) {
@@ -99,7 +105,6 @@
         h.ref = parent.ref;
         h.cond = cond;
         h.child = child;
-        h.ref = parent.ref;
     }
 
     HIf[proto][UPDATE] = function (model) {

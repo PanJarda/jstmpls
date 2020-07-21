@@ -3,7 +3,7 @@
 		"index": "./index.js",
 		"test": "./test.js",
 		"index.oop": "./index.oop.js",
-		"index.es6": "./index.es6.js"
+		"index.0comp": "./index.0comp.js"
 	},
 	"output": {
         "filename": "[name].min.js",
