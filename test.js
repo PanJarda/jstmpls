@@ -113,7 +113,7 @@ function main() {
         updateView();
     });
 
-    window.addEventListener('storage', loadModel)
+    //window.addEventListener('storage', loadModel)
 
     var view =
         h('div', { "class": "ahoj" }, [
