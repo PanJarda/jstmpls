@@ -195,11 +195,12 @@
         if (oN > newN) {
             var i = oN - newN;
             //IE5
-            this.children = this.children.slice( 0, newN );
+            this.children.splice( newN );
             while ( i-- ) {
                 this.parent.ref.removeChild( this.parent.ref.children[ newN ] );
             }
         }
+        this.old = arr.slice();
     };
 
     function h( tagName, attrs, children ) {
