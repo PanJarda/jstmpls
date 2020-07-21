@@ -86,7 +86,7 @@
     };
 
     const hFor =  (parent, arrFn, childFactory) => {
-        const old = [],
+        let old = [],
         children = [],
         res = model => {
             parent(model);
@@ -108,6 +108,17 @@
                 children.push(child);
                 parent.ref[appendCh](child.ref);
             });
+            // odrizneme precuhujici prvky
+            const oN = old.length,
+            newN = arr.length;
+            if ( oN > newN ) {
+                let i = oN - newN;
+                children.splice( newN );
+                while ( i-- )
+                    parent.ref.removeChild( parent.ref.children[ newN ] );
+            }
+
+            old = arr.slice();
         };
 
         res.ref = parent.ref;
