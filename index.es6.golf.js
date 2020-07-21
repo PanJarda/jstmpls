@@ -3,9 +3,10 @@
     const doc = document,
     appendCh = 'appendChild',
     S = 'setAttribute',
-    CREATETXT = 'createTextNode';
+    C = 'createTextNode',
+    Q = 'create';
     const h = (tag,props,children) => {
-        const root = doc.createElement(tag),
+        const root = doc[Q+'Element'](tag),
         puns = [];
 
         // setting props
@@ -17,7 +18,7 @@
                 continue;
             }
             if (typeof value === 'function') {
-                let node = doc.createAttribute(name);
+                let node = doc[Q + 'Attribute'](name);
                 puns.push({f: value, n: node});
                 root[S + 'Node'](node);
                 continue;
@@ -27,11 +28,11 @@
         
         const t = typeof children;
         if (t === 'string')
-            root[appendCh](doc[CREATETXT](children));
+            root[appendCh](doc[C](children));
         else if (t === 'function')
             puns.push({
                 f: children,
-                n: root[appendCh](doc[CREATETXT](''))
+                n: root[appendCh](doc[C](''))
             });
         else if (t === 'object')
             children.forEach(ch => root[appendCh](ch.ref));
