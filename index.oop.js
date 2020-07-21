@@ -71,7 +71,7 @@
             newVal = pun.fn(model);
 
             if (pun.old === newVal)
-                return;
+                continue;
 
             if (typeof node === "object") {
                 if (h.ref.tagName === "INPUT" &&

@@ -1,9 +1,8 @@
 {
 	"entry": {
-		"index": "./index.js",
 		"test": "./test.js",
-		"index.oop": "./index.oop.js",
-		"index.es6": "./index.es6.js"
+		"index.es6": "./index.es6.js",
+		"index.es6.golf": "./index.es6.golf.js"
 	},
 	"output": {
         "filename": "[name].min.js",
@@ -11,11 +10,9 @@
 	},
 	"options": {
 		"warnings": true,
-		"ie8": true,
-		"safari10": true,
-		"ecma": 5,
+		"ecma": 2015,
 		"compress": {
-			"ecma": 5
+			"ecma": 2015
 		}
 	}
 }

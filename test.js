@@ -162,9 +162,15 @@ function main() {
 
     function updateView( m ) {
         setTimeout(storeModel, 0);
-        view.update( m || model );
+        if ('update' in view)
+            view.update( m || model );
+        else
+            view(m || model);
     }
-    view.update( model );
+    if ('update' in view)
+        view.update( model );
+    else
+        view(model);
 
     var app = document.getElementById('app');
     app.innerHTML = "";

@@ -9,7 +9,7 @@
 
  var fs = require('fs'),
     Terser = require( "terser" ),
-    config = require( "./terser-config.json" );
+    config = require( "./terser-config.es6.json" );
 
 if ( !( "entry" in config ) ) {
 	throw new Error( "'terser-config.json' has to specify file entries in 'entry' object." );
