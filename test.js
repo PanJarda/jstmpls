@@ -95,7 +95,7 @@ function main() {
     
     var _ = false;
     
-    function get( key ) {
+    function day( key ) {
         return function( obj ) {
             return obj[ key ]
         }
@@ -117,23 +117,23 @@ function main() {
 
     var view =
         h('div', { "class": "ahoj" }, [
-            h('h1', { "class": get("className"),
+            h('h1', { "class": day("className"),
                     ev: { click: toggleClass }
                     }, "Ahoj" ),
             h('div', _, [
-                h('p', _, get( "clicks" ) )
+                h('p', _, day( "clicks" ) )
             ]),
-            h('span', _, get( "error" ) ),
+            h('span', _, day( "error" ) ),
             h('a', {href:'#prdel', ev: { click: route }}, "link1"),
             h('hr'),
-            h('button', { ev: { mouseup: addClicks} }, "   +   " ),
+            h('button', { ev: { mousedown: addClicks} }, "   +   " ),
             h('i', _, " "),
-            h('button', { ev: { mouseup: subClicks} }, "   -   " ),
+            h('button', { ev: { mousedown: subClicks} }, "   -   " ),
             hIf( h('h2', _, "Ahoj" ),
-                get( "error" ),
-                    h('span', _, get("error"))),
+                day( "error" ),
+                    h('span', _, day("error"))),
             hIf(h('div'),
-                get("show"),
+                day("show"),
                 h('div',_, [
                     h('div', _, [
                         h('div', _, [
@@ -146,17 +146,17 @@ function main() {
                 ])
             ),
             hFor( h('ul'),
-                get("items"),
+                day("items"),
                 function() {
                     return h('li', _, [
-                        h('span',_, get("item")),
+                        h('span',_, day("item")),
                         h('span',_, " "),
-                        h('input', {value: get("item"),"data-index": get("index"),ev:{change:itemInputChange}}),
-                        h('button',{"data-index": get("index"),ev:{click: editItem}}, "edit"),
-                        h('button', {"data-index": get("index"), ev:{ mouseup: removeItem}}, " X ")
+                        h('input', {value: day("item"),"data-index": day("index"),ev:{change:itemInputChange}}),
+                        h('button',{"data-index": day("index"),ev:{click: editItem}}, "edit"),
+                        h('button', {"data-index": day("index"), ev:{ mouseup: removeItem}}, " X ")
                     ]);
                 }),
-            h('input', {value: get("input"), ev:{change: inputChange }} ),
+            h('input', {value: day("input"), ev:{change: inputChange }} ),
             h('button', {ev:{mouseup: addItem}}, "add Item")
         ]);
 

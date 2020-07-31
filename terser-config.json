@@ -3,7 +3,8 @@
 		"index": "./index.js",
 		"test": "./test.js",
 		"index.oop": "./index.oop.js",
-		"index.0comp": "./index.0comp.js"
+		"index.0comp": "./index.0comp.js",
+		"datepicker": "./datepicker.js"
 	},
 	"output": {
         "filename": "[name].min.js",

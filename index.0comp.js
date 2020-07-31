@@ -23,56 +23,62 @@
 (function ( window, foreach ) {
     'use strict';
 
-    function childrenAsString( self ) {
-        var txt = document.createTextNode( self.children );
-        self.ref.appendChild( txt );
-    }
-
-    function childrenAsFunction( self ) {
-        var txt = document.createTextNode( '' );
-        self.ref.appendChild( txt );
-        self.puns.push({
-            fn: self.children,
-            node: txt
-        });
-    }
-
-    function appendChild( self, child ) {
-        self.ref.appendChild( child.ref );
-    }
-
-    function childrenAsArray( self ) {
-        foreach( self.children, appendChild, self );
-    }
-
-    var childrenByType = {
-        string:   childrenAsString,
-        function: childrenAsFunction,
-        object:   childrenAsArray
-    };
-
-    function addEventListener( self, callback, evName ) {
-        self.ref.addEventListener( evName, callback, false );
-    }
-
-    function setAttribute( self, value, attr ) {
-        if ( attr === 'ev' ) {
-            foreach( value, addEventListener, self );
-            return;
+    var childrenByType = (function() {
+        function childrenAsString( self ) {
+            var txt = document.createTextNode( self.children );
+            self.ref.appendChild( txt );
         }
-
-        if ( typeof value === 'function' ) {
-            var node = document.createAttribute( attr );
+    
+        function childrenAsFunction( self ) {
+            var txt = document.createTextNode( '' );
+            self.ref.appendChild( txt );
             self.puns.push({
-                fn: value,
-                node: node
+                fn: self.children,
+                node: txt
             });
-            self.ref.setAttributeNode( node );
-            return;
         }
 
-        self.ref.setAttribute( attr, value );
-    }
+        var childrenAsArray = (function() {
+            function appendChild( self, child ) {
+                self.ref.appendChild( child.ref );
+            }
+
+            return function( self ) {
+                foreach( self.children, appendChild, self );
+            };
+        })();
+    
+        return {
+            string:   childrenAsString,
+            function: childrenAsFunction,
+            object:   childrenAsArray
+        };
+    })();
+
+    var setAttribute = (function() {
+        function addEventListener( self, callback, evName ) {
+            self.ref.addEventListener( evName, callback, false );
+        }
+        
+        return function( self, value, attr ) {
+            if ( attr === 'ev' ) {
+                foreach( value, addEventListener, self );
+                return;
+            }
+
+            if ( typeof value === 'function' ) {
+                var node = document.createAttribute( attr );
+                self.puns.push({
+                    fn: value,
+                    node: node
+                });
+                self.ref.setAttributeNode( node );
+                return;
+            }
+
+            self.ref.setAttribute( attr, value );
+        };
+    })();
 
     function updatePun( self, pun ) {
         var val = pun.fn( self.model );
@@ -127,9 +133,9 @@
     
         foreach( attrs, setAttribute, this );
 
-        var fn = childrenByType[ typeof children ];
-        if ( fn )
-            fn( this );
+        var appendChildren = childrenByType[ typeof children ];
+        if ( appendChildren )
+            appendChildren( this );
     }
 
     H.prototype.update = function ( model ) {
@@ -176,6 +182,10 @@
         this.ref      = parent.ref;
     }
 
+    function removeChild( self, child ) {
+        self.parent.ref.removeChild( child.ref );
+    }
+
     HFor.prototype.update = function ( model ) {
         this.parent.update( model );
 
@@ -194,11 +204,9 @@
         newN = arr.length;
         if (oN > newN) {
             var i = oN - newN;
-            //IE5
+            var childrenToRemove = this.children.slice( newN, oN );
             this.children.splice( newN );
-            while ( i-- ) {
-                this.parent.ref.removeChild( this.parent.ref.children[ newN ] );
-            }
+            foreach( childrenToRemove, removeChild, this );
         }
         this.old = arr.slice();
     };
