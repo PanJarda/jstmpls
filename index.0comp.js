@@ -87,10 +87,16 @@
             return;
 
         if ( typeof pun.node === 'object' ) {
-            if ( self.ref.tagName === "INPUT" &&
-                pun.node.name === "value" &&
-                self.ref.value !== val ) {
-                self.ref.value = val;
+            if ( self.ref.tagName === "INPUT") {
+                if (pun.node.name === "value" && self.ref.value !== val ) {
+                    self.ref.value = val;
+                } else if (pun.node.name === 'checked' && self.ref.checked !== val) {
+                    self.ref.checked = val;
+                } else if (pun.node.name === 'id' && self.ref.id !== val) {
+                    self.ref.id = val;
+                } else {
+                    pun.node.nodeValue = val;
+                }
             } else {
                 pun.node.nodeValue = val;
             }

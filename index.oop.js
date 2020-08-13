@@ -50,19 +50,22 @@
         }
 
         if (typeof value === "function") {
-            node = doc.createAttribute(attr);
+            if ( attr === 'checked' ) {
+                node = {name: 'checked'};
+            } else {
+                node = doc.createAttribute(attr);
+                h.ref.setAttributeNode(node);
+            }
 
             h.puns.push({
                 fn: value,
                 node: node
             });
 
-            h.ref[S + 'Node'](node);
-
             return;
         }
 
-        h.ref[S](attr, value);
+        h.ref.setAttribute(attr, value);
     };
 
     H[proto][UPDATE] = function (model) {
@@ -76,20 +79,35 @@
             node = pun.node;
             newVal = pun.fn(model);
 
-            if (pun.old === newVal)
-                continue;
-
-            if (typeof node === "object") {
-                if (h.ref.tagName === "INPUT" &&
-                    node.name === "value" &&
-                    h.ref.value !== newVal)
-                    h.ref.value = newVal;
-                else
-                    node.nodeValue = newVal;
-            } else {
-                h.ref[S](node, newVal);
+            if (h.ref.tagName === 'INPUT' && node.name === 'checked') {
+                pun.old = node.checked;
             }
 
+            if (h.ref.tagName === 'INPUT' && node.name === 'value') {
+                pun.old = node.value;
+            }
+
+            if (pun.old === newVal) {
+                continue;
+            }
+
+            if (typeof node === "object") {
+                if (h.ref.tagName === "INPUT") {
+                    if (node.name === "value" && h.ref.value !== newVal) {
+                        h.ref.value = newVal;
+                    } else if (node.name === "checked" && h.ref.checked !== newVal ) {
+                        h.ref.checked = newVal;
+                    } else if ( node.name === "id" && h.ref.id !== newVal) {
+                        h.ref.id = newVal;
+                    } else {
+                        node.nodeValue = newVal;
+                    }
+                } else {
+                    node.nodeValue = newVal;
+                }
+            } else {
+                h.ref.setAttribute(node, newVal);
+            }
             pun.old = newVal;
         }
 
@@ -148,8 +166,10 @@
         for (i = 0; i < N; i++) {
             item = arr[i];
             // TODO: deepcompare
-            if (h.old[i] === item)
+            if (h.old[i] === item && (typeof item === 'object' ? Object.keys(item).every(function(k) {return h.old[i][k] === item[k]}) : true)) {
+                console.log('skipping', item);
                 continue;
+            }
 
             if (h[CHLDRN][i]) {
                 h[CHLDRN][i][UPDATE]({ index: i, item: item, parent: model });
@@ -173,7 +193,11 @@
             }
         }
 
-        h.old = arr.slice();
+        if (typeof arr[0] === 'object') {
+            h.old =  arr.map(function(item) { return assignDeep({}, item) });
+        } else {
+            h.old = arr.splice();
+        }
     };
 
     function h(tagName, props, children) {
