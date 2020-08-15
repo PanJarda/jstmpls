@@ -179,12 +179,13 @@ function main() {
         }
     }
 
-    function handleClear() {
+    function handleClear(e) {
         model.inputRef.value = '';
         resizeInput('');
         model.flattenedResponse = [];
         hideResult();
         updateView();
+        e.stopPropagation();
     }
 
     function showResult() {
@@ -313,7 +314,7 @@ function main() {
                 {
                     'class': 'treetagselect_clearbtn',
                     ev: {
-                        click: handleClear
+                        mousedown: handleClear
                     }
                 }, 'X')
         ]),
