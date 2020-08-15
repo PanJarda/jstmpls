@@ -1,13 +1,14 @@
-function ajax(query, callback) {
-    console.log(query);
+function queryTree(query, callback) {
     setTimeout(
         callback,
         500,
         {
             name: 'world',
+            expanded: false,
             children: {
                 '232': {
                     name: 'FFF',
+                    expanded: false,
                     children: {
                         '1223': {
                             name: 'ad'
@@ -19,6 +20,7 @@ function ajax(query, callback) {
                 },
                 'wqe': {
                     name: 'Zlin',
+                    expanded: false,
                     children: {
                         'ccvd': {
                             name: 'Praha'
@@ -30,9 +32,33 @@ function ajax(query, callback) {
     );
 }
 
+function ajaxGetChildren(id, callback) {
+    setTimeout(
+        callback,
+        500,
+        id,
+        {
+            '1111': {
+                name: '111',
+            },
+            '2222': {
+                name: '222',
+            },
+            '3333': {
+                name: '333',
+            }
+        }
+    )
+}
+
 function flatten(res, id, node, depth) {
     res.push({
         name: node.name,
+        expanded: 'expanded' in node
+                    ? node.expanded
+                        ? 1
+                        : -1
+                    : 0,
         id: id,
         depth: depth
     });
@@ -42,7 +68,27 @@ function flatten(res, id, node, depth) {
         flatten(res, id, node.children[id], depth + 1);
     });
 }
-    
+
+function findNodeById(res,node, id) {
+    if (node.id === id) {
+        res.node = node;
+        return true;
+    }
+
+    if (!('children' in node))
+        return false;
+
+    var index = Object.keys(node.children).indexOf(id);
+    if (index > -1) {
+        res.node = node.children[id];
+        return true;
+    } else {
+        return Object.keys(node.children).some(function(key) {
+            return findNodeById(res, node.children[key], id);
+        });
+    }
+}
+
 function main() {
     var init = {
         inputRef: null,
@@ -50,9 +96,11 @@ function main() {
         selectedIds: {},
         serverResponse: {
             name: 'world',
+            expanded: false,
             children: {
                 '12393030': {
                     name: 'Olomoucky kraj',
+                    expanded: false,
                     children: {
                         '123123': {
                             name: 'Olomouc'
@@ -64,6 +112,7 @@ function main() {
                 },
                 '3121313123': {
                     name: 'Zlinsky kraj',
+                    expanded: false,
                     children: {
                         '1312313': {
                             name: 'Zlin'
@@ -76,16 +125,19 @@ function main() {
             {
                 id: '12393030',
                 name: 'Olomoucky kraj',
+                expanded: false,
                 depth: 0
             },
             {
                 id: '123123',
                 name: 'Olomouc',
+                expanded: false,
                 depth: 1
             },
             {
                 id: '1232131',
                 name: 'Jesenik',
+                expanded: false,
                 depth: 1
             }
         ]
@@ -99,12 +151,14 @@ function main() {
         console.log('updating');
         model.serverResponse = response;
         model.flattenedResponse = [];
-        flatten(model.flattenedResponse, '__root__', model.serverResponse, 0);
+        flatten(model.flattenedResponse, '__root__', response, 0);
         updateView();
     }
  
     function handleInput(e) {
-        ajax(e.target.value, updateTree);
+        var query = e.target.value;
+        if (query.length > 3)
+            queryTree(e.target.value, updateTree);
     }
 
     function handleClear() {
@@ -139,6 +193,38 @@ function main() {
         updateView();
     }
 
+    function mergeExpandedSubtree(id, children) {
+        var res = {};
+        if(!findNodeById(res, model.serverResponse, id))
+            return;
+
+        assignDeep(res.node.children, children);
+
+        res.node.expanded = true;
+        model.flattenedResponse = [];
+        // TODO duplicate code
+        flatten(model.flattenedResponse, '__root__', model.serverResponse, 0);
+        updateView();
+    }
+
+    function handleExpandSubtree(e) {
+        var expand = e.target.checked;
+        var id = e.target.getAttribute('data-id');
+        if (expand) {
+            ajaxGetChildren(id, mergeExpandedSubtree);
+        } else {
+            var res = {};
+            findNodeById(res, model.serverResponse, id);
+            res.node.children = {};
+            res.node.expanded = false;
+            model.flattenedResponse = [];
+            // TODO duplicate code
+            flatten(model.flattenedResponse, '__root__', model.serverResponse, 0);
+            updateView();
+        }
+        // ajaxem se dotazu na subtree;
+    }
+
     function get(key) {
         return function(model) {
             return model[key];
@@ -171,6 +257,17 @@ function main() {
                             indent += '\xa0\xa0\xa0';
                         return indent;
                     }),
+                    hIf(h('span'),
+                        function(model) {return model.item.expanded !== 0},
+                        h('input', {
+                            type: 'checkbox',
+                            'data-id': function(model) {return model.item.id},
+                            'checked': function(model) {return model.item.expanded === 1},
+                            ev: {
+                                change: handleExpandSubtree
+                            }
+                        })
+                    ),
                     h('input', {
                         type: 'checkbox',
                         'id': function(model) {return model.item.id},
@@ -196,7 +293,6 @@ function main() {
     model.inputRef = input.ref;
     model.flattenedResponse = [];
     flatten(model.flattenedResponse, '__root__', model.serverResponse, 0);
-    console.log(model.flattenedResponse);
     updateView();
 
     var app = document.getElementById('app');
