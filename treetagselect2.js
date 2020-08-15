@@ -96,6 +96,7 @@ function main() {
         selected: [],
         selectedIds: {},
         serverResponse: {
+            id: '__root__',
             name: 'world',
             expanded: false,
             children: {
@@ -153,10 +154,10 @@ function main() {
     var ipnut, result, mirror;
 
     function updateTree(response) {
-        console.log('updating');
         model.serverResponse = response;
         model.flattenedResponse = [];
         flatten(model.flattenedResponse, '__root__', response, 0);
+        result.ref.style.display = 'block';
         model.loading = false;
         updateView();
     }
@@ -171,8 +172,9 @@ function main() {
         resizeInput(query);
         if (query.length > 3) {
             queryTree(e.target.value, updateTree);
-            result.ref.style.display = 'block';
             model.loading = true;
+            // TODO: tohle nejak nefunguje
+            model.flattenedResponse = [];
             updateView();
         }
     }
@@ -213,6 +215,7 @@ function main() {
             });
             delete model.selectedIds[id];
         }
+        input.ref.focus();
         updateView();
     }
 

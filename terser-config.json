@@ -4,7 +4,8 @@
 		"test": "./test.js",
 		"index.oop": "./index.oop.js",
 		"index.0comp": "./index.0comp.js",
-		"datepicker": "./datepicker.js"
+		"datepicker": "./datepicker.js",
+		"treetagselect": "./treetagselect2.js"
 	},
 	"output": {
         "filename": "[name].min.js",
