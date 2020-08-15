@@ -1,0 +1,68 @@
+.treetagselect {
+    float: left;
+    position: relative;
+    width: 100%;
+}
+
+.treetagselect_inputcontainer {
+    border: 1px solid black;
+    border-radius: 0.2rem;
+}
+
+.treetagselect_results {
+    display: none;
+    border: 1px solid black;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    position: absolute;
+    z-index:999;
+    width: 100%;
+    background-color: white;
+}
+
+.treetagselect_selectedtags {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+
+.treetagselect_tag {
+    display: inline-block;
+    background-color: #eee;
+    padding: .2rem;
+    border-radius: .2rem;
+    margin: 0 .2rem;
+}
+
+.treetagselect_tag_button {
+    border: 0;
+}
+
+.treetagselect_input {
+    border: 0;
+    width: 3px;
+}
+
+.treetagselect_input:focus {
+    outline-offset: 0;
+    outline: none;
+}
+
+.treetagselect_hiddenmirror {
+    position: absolute;
+    visibility: hidden;
+    height: auto;
+    width: auto;
+    white-space: nowrap;
+}
+
+.treetagselect_clearbtn {
+    display: block;
+    float: right;
+    border-radius: .5rem;
+    border: 0;
+    background-color: #eee;
+    padding: 0.2rem .5rem;
+}

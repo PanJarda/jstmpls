@@ -146,6 +146,7 @@ function main() {
     var model = init;
  
     var _ = false;
+    var ipnut, result, mirror;
 
     function updateTree(response) {
         console.log('updating');
@@ -154,15 +155,34 @@ function main() {
         flatten(model.flattenedResponse, '__root__', response, 0);
         updateView();
     }
+
+    function resizeInput(query) {
+        mirror.ref.innerText = query;
+        input.ref.style.width = mirror.ref.clientWidth + 1 + 'px';
+    }
  
     function handleInput(e) {
         var query = e.target.value;
-        if (query.length > 3)
+        resizeInput(query);
+        if (query.length > 3) {
             queryTree(e.target.value, updateTree);
+            result.ref.style.display = 'block';
+        }
     }
 
     function handleClear() {
         model.inputRef.value = '';
+        resizeInput('');
+        model.flattenedResponse = [];
+        updateView();
+    }
+
+    function showResult() {
+        var query = input.ref.value;
+        if (query.length > 3) {
+            result.ref.style.display = 'block';
+            console.log(result.ref.style.display);
+        }
     }
 
     function handleTagToggle(e) {
@@ -173,7 +193,7 @@ function main() {
             model.selected.push({
                 id: id,
                 name: name
-            })
+            });
             model.selectedIds[id] = true;
         } else {
             model.selected = model.selected.filter(function(item) {
@@ -225,28 +245,51 @@ function main() {
         // ajaxem se dotazu na subtree;
     }
 
+    function handleInputFocus(e) {
+        input.ref.focus();
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
     function get(key) {
         return function(model) {
             return model[key];
         };
     }
 
-    var ipnut;
-    var view = h('div', _, [
+    var view = h('div', {'class': 'treetagselect'}, [
+        mirror = h('div', {'class': 'treetagselect_hiddenmirror'}),
+        h('div',
+            {
+                'class': 'treetagselect_inputcontainer',
+                ev: {
+                    mousedown: handleInputFocus
+                }
+            }, [
+            hFor(
+                h('ul', {'class': 'treetagselect_selectedtags'}),
+                get('selected'),
+                function() {
+                    return h('li', {'class': 'treetagselect_tag'}, [
+                        h('span', _, function(model) { return model.item.name; }),
+                        h('button', {'class': 'treetagselect_tag_button', 'data-id': function(model) {return model.item.id}, ev: {click: handleRemoveTag}}, 'X')
+                    ]);
+                }
+            ),
+            input = h('input', {
+                'class': 'treetagselect_input',
+                tabindex: '0',
+                ev: {
+                    input: handleInput,
+                    focus: showResult
+                }
+            }),
+            h('button', {
+                'class': 'treetagselect_clearbtn',
+                ev: {click: handleClear}}, 'X')
+        ]),
         hFor(
-            h('ul'),
-            get('selected'),
-            function() {
-                return h('li', _, [
-                    h('span', _, function(model) { return model.item.name; }),
-                    h('button', {'data-id': function(model) {return model.item.id}, ev: {click: handleRemoveTag}}, 'X')
-                ]);
-            }
-        ),
-        input = h('input', {ev: {input: handleInput}}),
-        h('button', {ev: {click: handleClear}}, 'clear'),
-        hFor(
-            h('ul'),
+            result = h('ul', {'class': 'treetagselect_results'}),
             get('flattenedResponse'),
             function() {
                 return h('li', _, [
@@ -283,6 +326,13 @@ function main() {
             }
         )
     ]);
+
+    result.ref.addEventListener('mousedown', function(e) {
+        e.stopPropagation();
+    });
+    window.addEventListener('mousedown', function() {
+        result.ref.style.display = 'none';
+    })
 
     function updateView( m ) {
         model.flattenedResponse.forEach(function(item) {
