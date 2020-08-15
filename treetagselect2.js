@@ -1,3 +1,34 @@
+function ajax(query, callback) {
+    console.log(query);
+    setTimeout(
+        callback,
+        500,
+        {
+            name: 'world',
+            children: {
+                '232': {
+                    name: 'FFF',
+                    children: {
+                        '1223': {
+                            name: 'ad'
+                        },
+                        'fafsd': {
+                            name: 'jesdfdfenik'
+                        }
+                    }
+                },
+                'wqe': {
+                    name: 'Zlin',
+                    children: {
+                        'ccvd': {
+                            name: 'Praha'
+                        }
+                    }
+                }
+            }
+        }
+    );
+}
 
 function flatten(res, id, node, depth) {
     res.push({
@@ -11,7 +42,7 @@ function flatten(res, id, node, depth) {
         flatten(res, id, node.children[id], depth + 1);
     });
 }
-
+    
 function main() {
     var init = {
         inputRef: null,
@@ -63,10 +94,17 @@ function main() {
     var model = init;
  
     var _ = false;
+
+    function updateTree(response) {
+        console.log('updating');
+        model.serverResponse = response;
+        model.flattenedResponse = [];
+        flatten(model.flattenedResponse, '__root__', model.serverResponse, 0);
+        updateView();
+    }
  
     function handleInput(e) {
-        // fire async ajax
-        console.log(e.target.value);
+        ajax(e.target.value, updateTree);
     }
 
     function handleClear() {
