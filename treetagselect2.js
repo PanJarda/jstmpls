@@ -92,6 +92,7 @@ function findNodeById(res,node, id) {
 function main() {
     var init = {
         inputRef: null,
+        loading: false,
         selected: [],
         selectedIds: {},
         serverResponse: {
@@ -126,18 +127,21 @@ function main() {
                 id: '12393030',
                 name: 'Olomoucky kraj',
                 expanded: false,
+                loading: false,
                 depth: 0
             },
             {
                 id: '123123',
                 name: 'Olomouc',
                 expanded: false,
+                loading: false,
                 depth: 1
             },
             {
                 id: '1232131',
                 name: 'Jesenik',
                 expanded: false,
+                loading: false,
                 depth: 1
             }
         ]
@@ -153,6 +157,7 @@ function main() {
         model.serverResponse = response;
         model.flattenedResponse = [];
         flatten(model.flattenedResponse, '__root__', response, 0);
+        model.loading = false;
         updateView();
     }
 
@@ -167,6 +172,8 @@ function main() {
         if (query.length > 3) {
             queryTree(e.target.value, updateTree);
             result.ref.style.display = 'block';
+            model.loading = true;
+            updateView();
         }
     }
 
@@ -174,6 +181,7 @@ function main() {
         model.inputRef.value = '';
         resizeInput('');
         model.flattenedResponse = [];
+        hideResult();
         updateView();
     }
 
@@ -183,6 +191,10 @@ function main() {
             result.ref.style.display = 'block';
             console.log(result.ref.style.display);
         }
+    }
+
+    function hideResult() {
+        result.ref.style.display = 'none';
     }
 
     function handleTagToggle(e) {
@@ -221,6 +233,7 @@ function main() {
         assignDeep(res.node.children, children);
 
         res.node.expanded = true;
+        res.node.loading = false;
         model.flattenedResponse = [];
         // TODO duplicate code
         flatten(model.flattenedResponse, '__root__', model.serverResponse, 0);
@@ -232,6 +245,15 @@ function main() {
         var id = e.target.getAttribute('data-id');
         if (expand) {
             ajaxGetChildren(id, mergeExpandedSubtree);
+            model.flattenedResponse.some(function(item) {
+                if (item.id === id) {
+                    item.loading = true;
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+            updateView();
         } else {
             var res = {};
             findNodeById(res, model.serverResponse, id);
@@ -284,10 +306,15 @@ function main() {
                     focus: showResult
                 }
             }),
-            h('button', {
-                'class': 'treetagselect_clearbtn',
-                ev: {click: handleClear}}, 'X')
+            h('button',
+                {
+                    'class': 'treetagselect_clearbtn',
+                    ev: {
+                        click: handleClear
+                    }
+                }, 'X')
         ]),
+        hIf(h('div'), function(model) {return model.loading}, h('span', _, 'loading')),
         hFor(
             result = h('ul', {'class': 'treetagselect_results'}),
             get('flattenedResponse'),
@@ -301,15 +328,20 @@ function main() {
                         return indent;
                     }),
                     hIf(h('span'),
-                        function(model) {return model.item.expanded !== 0},
-                        h('input', {
-                            type: 'checkbox',
-                            'data-id': function(model) {return model.item.id},
-                            'checked': function(model) {return model.item.expanded === 1},
-                            ev: {
-                                change: handleExpandSubtree
-                            }
-                        })
+                        function(model) {
+                            return model.item.expanded !== 0
+                        },
+                        h('span', _, [
+                            h('input', {
+                                type: 'checkbox',
+                                'data-id': function(model) {return model.item.id},
+                                'checked': function(model) {return model.item.expanded === 1},
+                                ev: {
+                                    change: handleExpandSubtree
+                                }
+                            }),
+                            h('label', _, function(model) {return model.item.loading ? 'loading' : ''})
+                        ])
                     ),
                     h('input', {
                         type: 'checkbox',
@@ -330,9 +362,7 @@ function main() {
     result.ref.addEventListener('mousedown', function(e) {
         e.stopPropagation();
     });
-    window.addEventListener('mousedown', function() {
-        result.ref.style.display = 'none';
-    })
+    window.addEventListener('mousedown', hideResult)
 
     function updateView( m ) {
         model.flattenedResponse.forEach(function(item) {
