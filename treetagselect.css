@@ -42,10 +42,13 @@
     margin-left: 0;
     padding: 0 .4rem 0 .8rem;
     border: 1px solid #f0f0f0;
+    color: #000000a6;
 }
 
 .treetagselect_tag_button {
     border: 0;
+    cursor: pointer;
+    color: #000000a6;
 }
 
 .treetagselect_input {
@@ -54,6 +57,7 @@
     line-height: 2.2rem;
     font-size: 1.4rem;
     padding: .4rem 0;
+    color: #000000a6;
 }
 
 .treetagselect_input:focus {
