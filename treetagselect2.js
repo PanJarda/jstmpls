@@ -198,6 +198,7 @@ function main() {
 
     function hideResult() {
         result.ref.style.display = 'none';
+        handleClear();
     }
 
     function handleTagToggle(e) {
@@ -309,14 +310,7 @@ function main() {
                     input: handleInput,
                     focus: showResult
                 }
-            }),
-            h('button',
-                {
-                    'class': 'treetagselect_clearbtn',
-                    ev: {
-                        mousedown: handleClear
-                    }
-                }, 'X')
+            })
         ]),
         hIf(h('div'), function(model) {return model.loading}, h('span', _, 'loading')),
         hFor(

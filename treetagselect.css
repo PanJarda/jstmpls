@@ -5,20 +5,23 @@
 }
 
 .treetagselect_inputcontainer {
-    border: 1px solid black;
+    border: 1px solid #d9d9d9;
     border-radius: 0.2rem;
+    font-size: 1.4rem;
+    line-height: 1.57;
+    padding: .1rem .4rem;
 }
 
 .treetagselect_results {
     display: none;
-    border: 1px solid black;
     margin: 0;
-    padding: 0;
     list-style-type: none;
     position: absolute;
     z-index:999;
     width: 100%;
+    padding: .8rem .4rem 0;
     background-color: white;
+    box-shadow: 0 3px 6px -4px rgba(0,0,0,.12), 0 6px 16px 0 rgba(0,0,0,.08), 0 9px 28px 8px rgba(0,0,0,.05);
 }
 
 .treetagselect_selectedtags {
@@ -30,10 +33,15 @@
 
 .treetagselect_tag {
     display: inline-block;
-    background-color: #eee;
-    padding: .2rem;
+    background-color: #f5f5f5;
     border-radius: .2rem;
     margin: 0 .2rem;
+    height: 2.4rem;
+    line-height: 2.2rem;
+    margin: .2rem .4rem;
+    margin-left: 0;
+    padding: 0 .4rem 0 .8rem;
+    border: 1px solid #f0f0f0;
 }
 
 .treetagselect_tag_button {
@@ -43,6 +51,9 @@
 .treetagselect_input {
     border: 0;
     width: 3px;
+    line-height: 2.2rem;
+    font-size: 1.4rem;
+    padding: .4rem 0;
 }
 
 .treetagselect_input:focus {
@@ -56,13 +67,4 @@
     height: auto;
     width: auto;
     white-space: nowrap;
-}
-
-.treetagselect_clearbtn {
-    display: block;
-    float: right;
-    border-radius: .5rem;
-    border: 0;
-    background-color: #eee;
-    padding: 0.2rem .5rem;
 }
