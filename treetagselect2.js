@@ -151,7 +151,8 @@ function main() {
     var model = init;
  
     var _ = false;
-    var ipnut, result, mirror;
+    var input, result, mirror, placeholder, container;
+    var placeholderText = 'Select admin levels';
 
     function updateTree(response) {
         model.serverResponse = response;
@@ -166,11 +167,16 @@ function main() {
         mirror.ref.innerText = query;
         input.ref.style.width = mirror.ref.clientWidth + 1 + 'px';
     }
+
+    function hideOutline() {
+        container.ref.classList.remove('treetagselect_inputcontainer-focus');
+    }
  
     function handleInput(e) {
         var query = e.target.value;
         resizeInput(query);
-        if (query.length > 3) {
+        if (query.length > 1) {
+            container.ref.classList.add('show_results');
             queryTree(e.target.value, updateTree);
             model.loading = true;
             // TODO: tohle nejak nefunguje
@@ -182,14 +188,19 @@ function main() {
     function handleClear(e) {
         model.inputRef.value = '';
         resizeInput('');
+        if (!model.selected.length) {
+            placeholder.ref.style.display = 'inline';
+        }
         model.flattenedResponse = [];
-        hideResult();
         updateView();
-        e.stopPropagation();
+        if (e) {
+            e.stopPropagation();
+        }
     }
 
     function showResult() {
         var query = input.ref.value;
+        container.ref.classList.add('treetagselect_inputcontainer-focus');
         if (query.length > 3) {
             result.ref.style.display = 'block';
             console.log(result.ref.style.display);
@@ -198,6 +209,7 @@ function main() {
 
     function hideResult() {
         result.ref.style.display = 'none';
+        container.ref.classList.remove('show_results');
         handleClear();
     }
 
@@ -217,7 +229,7 @@ function main() {
             });
             delete model.selectedIds[id];
         }
-        input.ref.focus();
+        input.ref.value = '';
         updateView();
     }
 
@@ -274,6 +286,7 @@ function main() {
 
     function handleInputFocus(e) {
         input.ref.focus();
+        placeholder.ref.style.display = 'none';
         e.preventDefault();
         e.stopPropagation();
     }
@@ -286,7 +299,7 @@ function main() {
 
     var view = h('div', {'class': 'treetagselect'}, [
         mirror = h('div', {'class': 'treetagselect_hiddenmirror'}),
-        h('div',
+        container = h('div',
             {
                 'class': 'treetagselect_inputcontainer',
                 ev: {
@@ -308,9 +321,11 @@ function main() {
                 tabindex: '0',
                 ev: {
                     input: handleInput,
-                    focus: showResult
+                    focus: showResult,
+                    focusout: hideOutline
                 }
-            })
+            }),
+            placeholder = h('span', {'class': 'treetagselect_placeholder'}, placeholderText)
         ]),
         hIf(h('div'), function(model) {return model.loading}, h('span', _, 'loading')),
         hFor(
@@ -332,12 +347,26 @@ function main() {
                         h('span', _, [
                             h('input', {
                                 type: 'checkbox',
+                                'class': 'treetagselect_expand_toggle',
+                                id: function(model) {return model.item.id + '-expand'},
                                 'data-id': function(model) {return model.item.id},
                                 'checked': function(model) {return model.item.expanded === 1},
                                 ev: {
                                     change: handleExpandSubtree
                                 }
                             }),
+                            h('label', {
+                                    'class': 'treetagselect_rightarrow_container',
+                                    'for': function(model) {return model.item.id + '-expand'}
+                                },
+                                [h('span', {'class': 'treetagselect_rightarrow'})]
+                            ),
+                            h('label', {
+                                    'class': 'treetagselect_downarrow_container',
+                                    'for': function(model) {return model.item.id + '-expand'}
+                                },
+                                [h('span', {'class': 'treetagselect_downarrow'})]
+                            ),
                             h('label', _, function(model) {return model.item.loading ? 'loading' : ''})
                         ])
                     ),

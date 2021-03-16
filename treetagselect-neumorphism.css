@@ -1,0 +1,110 @@
+.treetagselect {
+    float: left;
+    position: relative;
+    width: 100%;
+}
+
+.treetagselect_inputcontainer {
+    border: 2px solid #ffffff;
+    border-radius: 1.6rem;
+    font-size: 1.4rem;
+    line-height: 1.57;
+    padding: .4rem 0 0 .5rem;
+    box-shadow: inset 2px 2px 4px #e6e6e6, 1px 1px 1px  #e6e6e6;
+    /* box-shadow: 4px 4px 8px #d9d9d9, -4px -4px 8px #ffffff; */
+    /* box-shadow: inset 4px 4px 8px #d6d6d6, inset -4px -4px 8px #ffffff; */
+    /* box-shadow: inset 4px 4px 8px #e0e0e0, inset -4px -4px 8px #ffffff; */
+}
+
+.treetagselect_inputcontainer.show_results {
+    border-radius: .8rem .8rem 0 0;
+}
+
+.treetagselect_results {
+    display: none;
+    margin: 0;
+    list-style-type: none;
+    position: absolute;
+    z-index:999;
+    width: 100%;
+    padding: .8rem .4rem 0;
+    background-color: white;
+    border-radius: 0 0 .8rem .8rem;
+    border: .1rem solid #ccc;
+    border-top: 0;
+    box-shadow: 0 3px 6px -4px rgba(0,0,0,.12), 0 6px 16px 0 rgba(0,0,0,.08), 0 9px 28px 8px rgba(0,0,0,.05);
+}
+
+.treetagselect_selectedtags {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    line-height: normal;
+    font-size: inherit;
+}
+.treetagselect_tag {
+    display: inline-block;
+    vertical-align: auto;
+    background-color: #f5f5f5;
+    border-radius: 1.1rem;
+    margin: 0rem .6rem .4rem;
+    line-height: 2.2rem;
+    margin-left: 0;
+    padding-left: 1rem;
+    /* border: 1px solid #ffffff; */
+    /* border-bottom-color: #e6e6e6; */
+    /* border-right-color: #e2e2e2; */
+    /* border: 0; */
+    /* background: linear-gradient(0, #ddd, #f5f5f5); */
+    box-shadow: inset -1px -1px 3px #ececec;
+    color: #4a4a4a;
+    /* background: linear-gradient(145deg, #ffffff, #e6e6e6); */
+    box-shadow: 2px 2px 4px #d6d6d6, -2px -2px 4px #ffffff;
+}
+
+.treetagselect_tag:last-child {
+    margin-right: 0;
+}
+
+.treetagselect_tag_button {
+    border: 0;
+    cursor: pointer;
+    display: inline;
+    color: #737373;
+    line-height: 1.4rem;
+    padding: .4rem .6rem;
+    /* border-left: 1px dotted #ccc; */
+    /* margin-left: 6px; */
+    background-color: transparent;
+    border-radius: 0 .8rem .8rem 0;
+}
+
+.treetagselect_tag_button:hover {
+    background-color: #00000009;
+}
+
+.treetagselect_input {
+    border: 0;
+    width: 3px;
+    line-height: 2.4rem;
+    font-size: 1.4rem;
+    padding: 0;
+    margin-left: 0.4rem;
+    margin-bottom: .4rem;
+    margin-right: .4rem;
+    background-color: transparent;
+}
+
+.treetagselect_input:focus {
+    outline-offset: 0;
+    outline: none;
+}
+
+.treetagselect_hiddenmirror {
+    position: absolute;
+    visibility: hidden;
+    height: auto;
+    width: auto;
+    white-space: nowrap;
+}

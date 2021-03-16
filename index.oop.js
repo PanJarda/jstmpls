@@ -1,3 +1,7 @@
+/**
+ * TODO: zkusit to prepsat do vice funkcionalniho tvaru
+ * TODO: zkusit to prepsat do DbC a otestovat s JSDOM
+ */
 (function (window) {
     "use strict";
 
